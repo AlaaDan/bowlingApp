@@ -1,5 +1,6 @@
 const moment = require('moment')
 const mongoose = require('mongoose')
+const uuid = require('uuid-random')
 
 const bookingSchema = new mongoose.Schema({
     bookingDate: {
@@ -16,15 +17,22 @@ const bookingSchema = new mongoose.Schema({
     },
     numberOfPlayers: {
         required: true,
-        type: Number
+        type: Number ,
+        min: 1,
     },
     numberOfCourses: {
         required: true,
-        type: Number
+        type: Number,
+        min: 1,
+        max: 8
     },
     shoeSizes: {
         required: true,
         type: []
+    },
+    total: {
+        required: true,
+        type: Number
     }
 });
 
