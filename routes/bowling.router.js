@@ -1,6 +1,6 @@
 const { Router } = require('express')
 const router = new Router()
-const {createBooking, getBookingById, deleteBooking} = require('../model/booking.model')
+const {createBooking, getBookingById, deleteBooking, checkLineAvilibilty} = require('../model/booking.model')
 const {getAllCourses} = require('../model/course.model')
 const {shoeChecker, bookingIdCheck } = require('../middleware/booking.middleware')
 
@@ -8,7 +8,7 @@ router.get('/book/getbooking', bookingIdCheck, async (req, res)=>{
     const {bookingId} = req.body
     try {
         const booking = await getBookingById(bookingId)
-        console.log(booking)
+        //console.log(booking)
         res.status(200).json({sccuess: true, Email: booking.bookingEmail,
             Date: booking.bookingDate,
             Time: booking.bookingTime,
@@ -23,21 +23,25 @@ router.get('/book/getbooking', bookingIdCheck, async (req, res)=>{
 })
 
 router.post('/book',shoeChecker, async (req, res)=>{
-    const {bookingDate, bookingEmail, bookingTime, numberOfPlayers, numberOfCourses, shoeSizes} = req.body
-    const bookingData = {bookingDate, bookingEmail, bookingTime, numberOfPlayers, numberOfCourses, shoeSizes}
-    console.log(bookingData)
+    const {bookingDateTime, bookingEmail, numberOfPlayers, numberOfCourses, shoeSizes} = req.body
+    const bookingData = {bookingDateTime, bookingEmail, numberOfPlayers, numberOfCourses, shoeSizes}
+    //console.log(bookingData)
 
     try {
         const bookingDone = await createBooking(bookingData)
+        //const reservedCourses = await checkLineAvilibilty(bookingData)
+        
         res.status(200).json({success: true,Booking:{
             BookingID: bookingDone.id,
             Email: bookingDone.bookingEmail,
-            Date: bookingDone.bookingDate,
-            Time: bookingDone.bookingTime,
+            Date: bookingDone.bookingDateTime,
             NumberOfPlayers: bookingDone.numberOfPlayers,
             NumberOfCourses: bookingDone.numberOfCourses,
             NumberOfShoes: bookingDone.shoeSizes,
-            TotalPrice: bookingDone.total}
+            TotalPrice: bookingDone.total,
+            Courses: bookingData.reseredCourses,
+            //matchingDates: date
+        }
         })
         
     } catch (error) {
