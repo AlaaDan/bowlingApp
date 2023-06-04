@@ -5,7 +5,6 @@ const coursesSchema = new mongoose.Schema({
         required: true, 
         type: String
     }
-    
 })
 
 
